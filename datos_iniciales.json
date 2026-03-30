@@ -1,0 +1,14 @@
+[
+  {
+    "nombre": "Ana",
+    "edad": 28,
+    "ciudad": "Madrid",
+    "habilidades": ["Python", "SQL"]
+  },
+  {
+    "nombre": "Carlos",
+    "edad": 34,
+    "ciudad": "Barcelona",
+    "habilidades": ["Java", "C++"]
+  }
+]
