@@ -144,3 +144,55 @@ for usuario in mi_base_de_datos:
 #
 # with open('usuarios.json', 'w', encoding='utf-8') as archivo:
 #     json.dump(mi_base_de_datos, archivo, indent=4)
+
+
+# ==========================================
+# PARTE 4: MANEJO DE ERRORES AL TRABAJAR CON JSON
+# ==========================================
+print("\n--- MANEJO DE ERRORES ---")
+
+# Al trabajar con archivos, siempre es una buena práctica usar bloques try...except
+# para evitar que el programa se "rompa" o cierre bruscamente si algo sale mal.
+
+# 1. Error de archivo no encontrado (FileNotFoundError)
+# Esto ocurre comúnmente cuando la ruta o el nombre están mal escritos.
+ruta_archivo_falso = os.path.join(DIRECTORIO_ACTUAL, 'archivo_que_no_existe.json')
+
+print("\nIntentando leer un archivo inexistente:")
+try:
+    with open(ruta_archivo_falso, 'r', encoding='utf-8') as archivo:
+        datos_falsos = json.load(archivo)
+except FileNotFoundError:
+    print("❌ ERROR CAPTURADO (FileNotFoundError): El archivo no fue encontrado.")
+    print("   💡 Solución: Verifica que el archivo exista en la ruta especificada.")
+except Exception as e:
+    # Este bloque atrapa cualquier otro error no previsto
+    print(f"❌ ERROR INESPERADO: {e}")
+
+# 2. Error de lectura o decodificación del JSON (JSONDecodeError)
+# Esto pasa cuando el archivo existe, pero en su interior está vacío o tiene texto plano
+# que no respeta la estructura estricta de un JSON (usar comillas dobles, llaves, etc)
+ruta_json_invalido = os.path.join(DIRECTORIO_ACTUAL, 'json_malformado.json')
+
+# Primero, creamos a propósito un archivo que tiene formato incorrecto
+with open(ruta_json_invalido, 'w', encoding='utf-8') as archivo:
+    # Esto dará error porque usa comillas simples en lugar de dobles,
+    # y la clave 'nombre' no tiene comillas. (O simplemente escribiendo texto normal)
+    archivo.write("{nombre: 'Maria'}")
+
+print("\nIntentando leer un archivo con formato JSON incorrecto:")
+try:
+    with open(ruta_json_invalido, 'r', encoding='utf-8') as archivo:
+        # Aquí 'json.load' intentará traducirlo y se dará cuenta que la estructura está mal
+        datos_malos = json.load(archivo)
+except json.decoder.JSONDecodeError as error_detalle:
+    print("❌ ERROR CAPTURADO (JSONDecodeError): El archivo no tiene un formato JSON válido.")
+    print(f"   💡 Detalle técnico del error: {error_detalle}")
+    print("   💡 Solución: Asegúrate de que las propiedades tengan comillas dobles (\") y la estructura sea correcta.")
+except FileNotFoundError:
+    print("❌ ERROR: El archivo no existe.")
+
+# Para mantener la limpieza, borramos el archivo de prueba que acabamos de crear
+if os.path.exists(ruta_json_invalido):
+    os.remove(ruta_json_invalido)
+
